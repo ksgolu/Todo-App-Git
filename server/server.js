@@ -1,6 +1,6 @@
 //library module imports
 const express = require('express');
-const bodyParser = require('body-Parser');
+//const bodyParser = require('body-Parser'); instead of this using express built in middleware
 
 // local module imports
 const {mongoose} = require('./db/mongoose.js');
@@ -15,7 +15,7 @@ data (sent by client) into javascript object and set it to request (req) object 
 */
 //app.use(bodyParser.json());
 //"body-parser": "^1.18.3", -dependcies for json file
-app.use(express.json());
+app.use(express.json()); //using express built-in middleware to pase data into json
 
 app.post('/todos',(req,res) => {
     var todo = new Todo({
