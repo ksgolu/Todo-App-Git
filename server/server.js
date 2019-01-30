@@ -13,7 +13,9 @@ const port = process.env.PORT || 3000;
 /*Using body-parser as a middleWare.This middleWare convert JSON
 data (sent by client) into javascript object and set it to request (req) object of POST routes.
 */
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+//"body-parser": "^1.18.3", -dependcies for json file
+app.use(express.json());
 
 app.post('/todos',(req,res) => {
     var todo = new Todo({
