@@ -1,3 +1,10 @@
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+                                   
+                                            LIBRARY AND LOCAL MODULES IMPORTS
+
+---------------------------------------------------------------------------------------------------------------------------------------------*/
+
 //library module imports
 const express = require('express');
 const{ObjectID} = require('mongodb');
@@ -10,6 +17,16 @@ const _ = require('lodash');
 const {mongoose} = require('./db/mongoose.js');
 const {Todo} = require('./models/todo.js'); //impoting Todo, exports by mongoose file
 const {Users} = require('./models/user.js');
+const {authenticate} = require('./middleware/authenticate.js'); // to authenticate the routes
+
+
+
+
+/*_____________________________________________________________________________________________________________________________________________
+
+                                        SETTING APP AND MIDDLEWARE
+
+--------------------------------------------------------------------------------------------------------------------------------------*/
 
 let app = express();
 const port = process.env.PORT || 3000;
@@ -25,7 +42,19 @@ app.use(express.json()); //using express built-in middleware to pase data into j
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });*/
-app.post('/todos',(req,res) => {
+
+
+
+
+
+  /*_______________________________________________________________________________________________________________________________________
+
+                                                            TODOS ROUTES
+
+  -------------------------------------------------------------------------------------------------------------------------------------------*/                                                          
+
+//CREATING A NEW TODO WITH TEXT AND COMPLETED JSON VALUE
+  app.post('/todos',(req,res) => {
     var todo = new Todo({
         text : req.body.text,
     });
@@ -38,6 +67,7 @@ app.post('/todos',(req,res) => {
     });
 });
 
+//LIST ALL THE TODOS
 app.get('/todos',(req,res) => {
     Todo.find().then((docs) =>{
         res.send({docs});
@@ -46,6 +76,8 @@ app.get('/todos',(req,res) => {
     }
 });
 
+
+//GET TODOS BY ID ONLY
 app.get('/todos/:id',(req,res) =>{
     let id = req.params.id;
     if(!ObjectID.isValid(id))
@@ -60,6 +92,8 @@ app.get('/todos/:id',(req,res) =>{
     });
 });
 
+
+//UPDATE TODOS BY USING ID
 app.delete('/todos/:id' ,(req,res) => {
     let id = req.params.id;
     if(!ObjectID.isValid(id))
@@ -73,6 +107,8 @@ app.delete('/todos/:id' ,(req,res) => {
     });
 
 });
+
+//UPDATE TODOS BY USING ID
 app.patch('/todos/:id',(req,res) =>{
     let id = req.params.id;
     if(!ObjectID.isValid(id))
@@ -102,6 +138,14 @@ app.patch('/todos/:id',(req,res) =>{
         });
 });
 
+
+/*________________________________________________________________________________________________________________________________________________
+
+                                                    USER ROUTES
+
+----------------------------------------------------------------------------------------------------------------------------------------------*/
+
+//CREATE A NEW USER AND GENERATE TOKEN FOR THAT USER
 app.post('/users',(req,res) => {
     let body = _.pick(req.body,['email','password']);
     let user = new Users(body);
@@ -112,8 +156,18 @@ app.post('/users',(req,res) => {
         res.header('x-auth',token).send(user);
     }).catch((e) => {
         res.status(400).send();
-    })
-})
+    });
+});
+
+
+//VERIFYING TOKEN AND GETTING A USER BY TOKEN . VERIFACTION DONE BY MIDDLEWARE IN AUTHRNTICATE.JS FILE
+app.get('/users/me',authenticate,(req,res) => {
+    res.send(req.user);
+});
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------
 app.listen(port,() =>{
     console.log(`server is up on port : ${port}`);
 });

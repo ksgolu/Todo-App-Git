@@ -31,6 +31,9 @@ const UserSchema = new mongoose.Schema({
     }]
 });
 
+/*--------------------------------------------------------------------------------------------------------------------
+                                     INSTANCE METHOD 
+----------------------------------------------------------------------------------------------------------------------
 /*this below function is override function of mongoose toJSON() method. Mongoose automatically
 convert object to JSON by using toJSON() method and send it along with response header.  */
 UserSchema.methods.toJSON = function(){
@@ -56,5 +59,24 @@ UserSchema.methods.generateAuthToken = function(){
         return token;
     })
 };
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+                                                            MODEL METHOD
+----------------------------------------------------------------------------------------------------------------------------------------------*/
+UserSchema.statics.findByToken = function(token)
+{
+    let User = this;
+    let decode;
+
+    try {
+        decode = jwt.verify(token,'abc123');
+    } catch (error) {
+        return Promise.reject();
+    }
+    return User.findOne({
+        '_id': decode._id,
+        'tokens.token':token,
+        'tokens.access':'auth', 
+    });
+}
 let Users = mongoose.model('users',UserSchema);
 module.exports = {Users};
