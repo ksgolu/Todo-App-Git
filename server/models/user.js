@@ -31,8 +31,8 @@ const UserSchema = new mongoose.Schema({
     }]
 });
 
-//this below function work as an internal and return on pick value. the pick value is catched by
-//header in server.js file
+/*this below function is override function of mongoose toJSON() method. Mongoose automatically
+convert object to JSON by using toJSON() method and send it along with response header.  */
 UserSchema.methods.toJSON = function(){
     let user = this;
     let userObject = user.toObject();
