@@ -160,12 +160,35 @@ app.post('/users',(req,res) => {
 });
 
 
-//VERIFYING TOKEN AND GETTING A USER BY TOKEN . VERIFACTION DONE BY MIDDLEWARE IN AUTHRNTICATE.JS FILE
+//GETTING A USER BY VERIFYING TOKEN . VERIFACTION DONE BY MIDDLEWARE IN AUTHRNTICATE.JS FILE
 app.get('/users/me',authenticate,(req,res) => {
+  
     res.send(req.user);
 });
 
 
+//LOGIN ROUTE SO, THAT USER CAN LOGIN FROM ANY MACHINE AND ALWAYS GET A TOKEN FOR THAT MACHINE
+app.post('/users/login',(req,res) =>{
+    let body = _.pick(req.body, ['email','password']);
+
+    Users.findByCredentials(body.email, body.password).then((user) =>{
+        return user.generateAuthToken().then((token) =>{
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((e) =>{
+        res.status(400).send();
+    });
+});
+
+//DELETE TOKEN AND LOGOUT ROUTE
+app.delete('/users/me/token',authenticate,(req,res) =>{
+    let user = req.user;
+    user.removeToken(req.token).then(() =>{
+        res.status(200).send();
+    },() =>{
+        res.status(400).send();
+    });
+});
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 app.listen(port,() =>{
