@@ -37,11 +37,12 @@ data (sent by client) into javascript object and set it to request (req) object 
 //app.use(bodyParser.json());
 //"body-parser": "^1.18.3", -dependcies for json file
 app.use(express.json()); //using express built-in middleware to pase data into json
-/*app.use(function(req, res, next) {
+app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,user, x-auth");
+    res.header("Access-Control-Allow-Methods","DELETE,GET,PATCH,POST,PUT");
     next();
-  });*/
+  });
 
 
 
@@ -53,10 +54,11 @@ app.use(express.json()); //using express built-in middleware to pase data into j
 
   -------------------------------------------------------------------------------------------------------------------------------------------*/                                                          
 
-//CREATING A NEW TODO WITH TEXT AND COMPLETED JSON VALUE
-  app.post('/todos',(req,res) => {
+//CREATING A NEW TODO WITH TEXT PROPERTY AND A _CREATOR PROPERTY(STORE THE ID OF USER WHO CREATED TODO) AND COMPLETED JSON VALUE
+  app.post('/todos',authenticate,(req,res) => {
     var todo = new Todo({
         text : req.body.text,
+        _creator : req.user._id,
     });
 
     todo.save().then((doc) =>{
@@ -67,9 +69,9 @@ app.use(express.json()); //using express built-in middleware to pase data into j
     });
 });
 
-//LIST ALL THE TODOS
-app.get('/todos',(req,res) => {
-    Todo.find().then((docs) =>{
+//LIST ALL THE TODOS OF LOGGED USER
+app.get('/todos',authenticate,(req,res) => {
+    Todo.find({_creator: req.user._id}).then((docs) =>{
         res.send({docs});
     }),(err) => {
         res.status(400).send(err);
@@ -77,13 +79,16 @@ app.get('/todos',(req,res) => {
 });
 
 
-//GET TODOS BY ID ONLY
-app.get('/todos/:id',(req,res) =>{
+//GET TODOS BY ID ONLY, ONLY LOGGED USER
+app.get('/todos/:id',authenticate,(req,res) =>{
     let id = req.params.id;
     if(!ObjectID.isValid(id))
         return res.status(404).send();
 
-    Todo.findById(id).then((docs) => {
+    Todo.findOne({
+        _id : id,
+        _creator : req.user._id,
+    }).then((docs) => {
         if(!docs)
             return res.status(404).send();
         res.send({docs});
@@ -93,12 +98,14 @@ app.get('/todos/:id',(req,res) =>{
 });
 
 
-//UPDATE TODOS BY USING ID
-app.delete('/todos/:id' ,(req,res) => {
+//DELETE TODOS BY USING ID OF LOGGED USER
+app.delete('/todos/:id' , authenticate, (req,res) => {
     let id = req.params.id;
     if(!ObjectID.isValid(id))
         return res.status(404).send();
-    Todo.findByIdAndDelete(id).then((docs) =>{
+    Todo.findOneAndRemove({
+         _id: id,
+          _creator: req.user._id}).then((docs) =>{
        if (!docs)
             return res.status(404).send();
         res.send({docs});
@@ -108,8 +115,8 @@ app.delete('/todos/:id' ,(req,res) => {
 
 });
 
-//UPDATE TODOS BY USING ID
-app.patch('/todos/:id',(req,res) =>{
+//UPDATE TODOS BY USING ID OF LOGGED USER
+app.patch('/todos/:id', authenticate,(req,res) =>{
     let id = req.params.id;
     if(!ObjectID.isValid(id))
         return res.status(404).send();
@@ -128,7 +135,17 @@ app.patch('/todos/:id',(req,res) =>{
         body.completed =false;
         body.completedAt =null;
     }
-    Todo.findByIdAndUpdate(id,{$set:body},{new:true})
+    Todo.findOneAndUpdate(
+        {
+        _id: id,
+         _creator: req.user._id
+        },
+         {
+             $set:body
+        },
+         {
+             new:true
+        })
     .then((docs) =>{
         if(!docs)
             return res.status(404).send();
@@ -160,7 +177,7 @@ app.post('/users',(req,res) => {
 });
 
 
-//GETTING A USER BY VERIFYING TOKEN . VERIFACTION DONE BY MIDDLEWARE IN AUTHRNTICATE.JS FILE
+//GETTING A USER BY VERIFYING TOKEN . VERIFACTION DONE BY MIDDLEWARE IN AUTHENTICATE.JS FILE
 app.get('/users/me',authenticate,(req,res) => {
   
     res.send(req.user);
@@ -173,14 +190,14 @@ app.post('/users/login',(req,res) =>{
 
     Users.findByCredentials(body.email, body.password).then((user) =>{
         return user.generateAuthToken().then((token) =>{
-            res.header('x-auth', token).send(user);
+            res.header('x-auth', token).send({user,token});
         });
     }).catch((e) =>{
         res.status(400).send();
     });
 });
 
-//DELETE TOKEN AND LOGOUT ROUTE
+//DELETE TOKEN OF LOGGED-IN USER AND LOGOUT ROUTE
 app.delete('/users/me/token',authenticate,(req,res) =>{
     let user = req.user;
     user.removeToken(req.token).then(() =>{

@@ -95,7 +95,7 @@ UserSchema.methods.removeToken = function(token)
     let user = this;
 
     //using $pull operator to remove the selected item from token array
-    return user.update({
+    return user.updateOne({
             $pull:{
                 tokens:{
                     token: token
