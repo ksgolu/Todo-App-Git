@@ -36,7 +36,7 @@ data (sent by client) into javascript object and set it to request (req) object 
 */
 //app.use(bodyParser.json());
 //"body-parser": "^1.18.3", -dependcies for json file
-app.use(express.json()); //using express built-in middleware to pase data into json
+app.use(express.json()); //Instead of using above we can use express built-in middleware to parse json data into object
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,user, x-auth");
