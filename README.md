@@ -1,11 +1,11 @@
 # A REST API - Todo-app
 link:-
 
-
+#
 NOTE- To interact with Todo API all the essential requirement are pre-installed like:
 1. CROS(cross resource origine service) - Hence any browser can access this API regardless of Cross Resource Origine Policy of browser.
 2. JWT (JSON Web Token) - To authenticate the user by token system.
-
+#
 
 # Features
 1. User-id and password are required to authenticate user
@@ -50,7 +50,9 @@ Method:-DELETE
 Follow the same of # Verifying token or user manually, but use the above route And server will response with status code 200.
 
 #
+
 Note:- Below are the todos realted route and every route required token, so set token in request header for all route 
+
 # 
 
 # Add a new todo
