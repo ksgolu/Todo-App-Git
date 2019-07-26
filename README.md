@@ -22,6 +22,7 @@ For every route this token is required to authenticate the user and it must be s
 
 # Registering a new user
 Route:- '/users'
+
 Method:- POST
 To register a new user, You need to send a request along with body in JSON form,  A JSON consist of key:value pair  
 where keys are 'email' and 'password' and value are a valid email-id and password. 
