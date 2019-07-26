@@ -1,16 +1,16 @@
-# A REST API - Todo-app
+<h1> A REST API - Todo-app </h1>
 API:-
 
-
+#
 ```diff
-+NOTE
-#
-!To interact with Todo API all the essential requirement are pre-installed like:
-!1. CROS(cross resource origine service) - Hence any browser can access this API regardless of 
-!Cross Resource Origine Policy of browser.
-!2. JWT (JSON Web Token) - To authenticate the user by token system.
-#
+NOTE
+To interact with Todo API all the essential requirement are pre-installed like:
+1. CROS(cross resource origine service) - Hence any browser can access this API regardless of 
+    Cross Resource Origine Policy of browser.
+2. JWT (JSON Web Token) - To authenticate the user by token system.
 ```
+#
+<div>
 # Features
 1. User-id and password are required to authenticate user
 2. search todo by user name
@@ -18,7 +18,7 @@ API:-
 4. Follow the Principle of Restfull API.
 5. Use MongoDB as database (No setup required)
 6. Using JSON to exchange data 
-
+</div>
 # How it work
 At first user need to create an user-id and password, after sucessfull creation a token is generated for that user.
 And when user get logout token are deleted. Again a new token is generated when a user sign-in.
@@ -54,9 +54,10 @@ Method:-DELETE</br>
 Follow the same of # Verifying token or user manually, but use the above route And server will response with status code 200.
 
 #
-
-Note:- Below are the todos realted route and every route required token, so set token in request header for all route 
-
+```diff
+Note:- Below are the todos realted route and every route required token, 
+so set token in request header for all route 
+```
 # 
 
 # Add a new todo
