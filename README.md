@@ -1,8 +1,9 @@
 # A REST API - Todo-app
 API:-
 
-+NOTE
+
 ```diff
++NOTE
 #
 !To interact with Todo API all the essential requirement are pre-installed like:
 !1. CROS(cross resource origine service) - Hence any browser can access this API regardless of Cross Resource Origine Policy of browser.
@@ -23,9 +24,8 @@ And when user get logout token are deleted. Again a new token is generated when 
 For every route this token is required to authenticate the user and it must be send to server along with headers.
 
 # Registering a new user
-Route:- '/users'
-
-Method:- POST
+Route:- '/users'<br>
+Method:- POST<br>
 To register a new user, You need to send a request along with body in JSON form,  A JSON consist of key:value pair  
 where keys are 'email' and 'password' and value are a valid email-id and password. 
 eg:-
