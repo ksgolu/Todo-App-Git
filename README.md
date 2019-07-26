@@ -10,7 +10,7 @@ To interact with Todo API all the essential requirement are pre-installed like:
 2. JWT (JSON Web Token) - To authenticate the user by token system.
 ```
 #
-<div>
+
 # Features
 1. User-id and password are required to authenticate user
 2. search todo by user name
@@ -18,7 +18,7 @@ To interact with Todo API all the essential requirement are pre-installed like:
 4. Follow the Principle of Restfull API.
 5. Use MongoDB as database (No setup required)
 6. Using JSON to exchange data 
-</div>
+
 # How it work
 At first user need to create an user-id and password, after sucessfull creation a token is generated for that user.
 And when user get logout token are deleted. Again a new token is generated when a user sign-in.
