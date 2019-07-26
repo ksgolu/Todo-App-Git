@@ -1,11 +1,12 @@
 # A REST API - Todo-app
 API:-
 
++NOTE
 ```diff
 #
-!NOTE- To interact with Todo API all the essential requirement are pre-installed like:
-1. CROS(cross resource origine service) - Hence any browser can access this API regardless of Cross Resource Origine Policy of browser.
-2. JWT (JSON Web Token) - To authenticate the user by token system.
+!To interact with Todo API all the essential requirement are pre-installed like:
+!1. CROS(cross resource origine service) - Hence any browser can access this API regardless of Cross Resource Origine Policy of browser.
+!2. JWT (JSON Web Token) - To authenticate the user by token system.
 #
 ```
 # Features
